@@ -548,6 +548,26 @@ auto Stealthometer::DrawOverlayUI(bool focused) -> void
 	}
 	ImGui::End();
 	ImGui::PopFont();
+
+	auto s_LocalHitman = SDK()->GetLocalPlayer();
+
+	if (s_LocalHitman) {
+		const auto s_HM5Health = s_LocalHitman.m_pInterfaceRef->m_pHealth;
+
+		if (s_HM5Health) {
+			const auto s_Health = (s_HM5Health->m_fHitPoints / s_HM5Health->m_fMaxHitPoints) * 100.f;
+			char s_Buffer[64];
+
+			snprintf(s_Buffer, sizeof(s_Buffer), "Health: %.0f%%", s_Health);
+
+			std::string s_Text;
+			s_Text += s_Buffer;
+
+			ImGui::Begin("Player Health", &cfg.inGameOverlay, flags);
+			ImGui::Text(s_Text.c_str());
+			ImGui::End();
+		}
+	}
 }
 
 auto Stealthometer::DrawLiveSplitUI(bool focused) -> void
