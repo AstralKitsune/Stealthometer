@@ -563,8 +563,25 @@ auto Stealthometer::DrawOverlayUI(bool focused) -> void
 			std::string s_Text;
 			s_Text += s_Buffer;
 
-			ImGui::Begin("Player Health", &cfg.inGameOverlay, flags);
-			ImGui::Text(s_Text.c_str());
+			if (ImGui::Begin("Player Health", &cfg.inGameOverlay, flags)) {
+				ImGui::Text(s_Text.c_str());
+			}
+			ImGui::End();
+
+			ImGui::SetNextWindowSize(ImVec2(215, 20));
+			if (ImGui::Begin("Health Bar", &cfg.inGameOverlay, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground)) {
+				ImDrawList* draw_list = ImGui::GetWindowDrawList();
+				ImVec2 pos = ImGui::GetCursorScreenPos();
+				float width = 200.0f;
+				float height = 20.0f;
+				float health_percentage = s_Health / 100.f;
+
+				// Fill portion of the health bar based on health percentage
+				draw_list->AddRectFilled(pos, ImVec2(pos.x + width * health_percentage, pos.y + height), IM_COL32(255, 0, 0, 255), ImDrawFlags_RoundCornersAll);
+
+				// White border
+				draw_list->AddRect(pos, ImVec2(pos.x + width, pos.y + height), IM_COL32(255, 255, 255, 255), ImDrawFlags_RoundCornersAll);
+			}
 			ImGui::End();
 		}
 	}
